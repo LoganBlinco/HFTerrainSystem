@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MoistureValues xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Dryest>0.0</Dryest>
+  <Dryer>0.3</Dryer>
+  <Dry>0.4</Dry>
+  <Wet>0.6</Wet>
+  <Wetter>0.8</Wetter>
+  <Wettest>0.9</Wettest>
+</MoistureValues>
