@@ -10,9 +10,13 @@ public class GeneratorEditor : Editor
 	{
 		DrawDefaultInspector();
 		Generator myScript = (Generator)target;
-		if (GUILayout.Button("run Main"))
+		if (GUILayout.Button("Generate Random Seed"))
 		{
-			myScript.Main();
+			myScript.Run_RandomSeed();
+		}
+		if (GUILayout.Button("Generate Same Seed"))
+		{
+			myScript.Run_SetSeed();
 		}
 	}
 }

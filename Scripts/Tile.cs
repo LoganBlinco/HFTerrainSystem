@@ -48,7 +48,7 @@ public class Tile
 	{
 		//distance function d(x,y)
 		primaryBiomeType = getBiomeFromEnums(NewMoistureTypes[0], NewHeatTypes[0], BiomeTable);
-		float primaryD = CustomMaths.distance(Biome.MoistureToValue[NewMoistureTypes[0]], Biome.HeatToValue[NewHeatTypes[0]], MoistureData, HeatData);
+		float primaryD = CustomMaths.distance(BiomeInfomation.MoistureToValue[NewMoistureTypes[0]], BiomeInfomation.HeatToValue[NewHeatTypes[0]], MoistureData, HeatData);
 
 		SecondaryBiomeType  = DEFAULT_BIOME_TYPE;
 		float secondaryD = float.MaxValue;
@@ -61,7 +61,7 @@ public class Tile
 				BiomeType currentBiome = getBiomeFromEnums(m, h, BiomeTable);
 				if (currentBiome != primaryBiomeType)
 				{
-					float currentD = CustomMaths.distance(Biome.MoistureToValue[m], Biome.HeatToValue[h], MoistureData, HeatData);
+					float currentD = CustomMaths.distance(BiomeInfomation.MoistureToValue[m], BiomeInfomation.HeatToValue[h], MoistureData, HeatData);
 					if (currentD < secondaryD)
 					{
 						thirdD = secondaryD;
@@ -107,7 +107,7 @@ public class Tile
 		for (int i = 0; i < enumArray.Length; i++)
 		{
 			MoistureType type = enumArray[i];
-			if (Biome.MoistureToValue[type] <= HeatData)
+			if (BiomeInfomation.MoistureToValue[type] <= HeatData)
 			{
 				correctIndex = i;
 			}
@@ -119,7 +119,7 @@ public class Tile
 		}
 		if (correctIndex == -1)
 		{
-			Debug.Log("Failed to find a correct biome");
+			Debug.Log("Failed to find a correct biome Value: "+HeatData);
 			return;
 		}
 		NewMoistureTypes[0] = enumArray[correctIndex];
@@ -146,7 +146,7 @@ public class Tile
 		for (int i = 0; i < enumArray.Length; i++)
 		{
 			HeatType type = enumArray[i];
-			if (Biome.HeatToValue[type] <= HeatData)
+			if (BiomeInfomation.HeatToValue[type] <= HeatData)
 			{
 				correctIndex = i;
 			}

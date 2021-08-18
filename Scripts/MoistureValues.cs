@@ -22,7 +22,7 @@ public class MoistureValues
 
     public void GenerateDictionary()
     {
-        Biome.GenerateMoistureDictionary(this);
+        BiomeInfomation.GenerateMoistureDictionary(this);
     }
 
     #region XML

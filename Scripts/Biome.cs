@@ -1,84 +1,171 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Biome
 {
-	public static Dictionary<MoistureType, float> MoistureToValue = new Dictionary<MoistureType, float>();
-    public static Dictionary<HeatType, float> HeatToValue = new Dictionary<HeatType, float>();
+	public static string XML_PREFIX = "DEFAULT_BIOME_";
 
-    public static MoistureType DEFAULT_MOISTURE = MoistureType.Wet;
-    public static HeatType DEFAULT_HEAT = HeatType.Warm;
+	public BiomeType bType;
+	public GeneratorSettings generateSettings;
+
+	public TextureInfomation texInfo;
+	public float[,] heightMap;
+
+	//Grass values
+	//public List<grassInfomation> grassList = new List<grassInfomation>();
+	public Dictionary<int, grassInfomation> grassDict = new Dictionary<int, grassInfomation>();
+
+	public float totalW = 0;
+
+	public Biome(BiomeType b)
+	{
+		bType = b;
+		updateGrassInfo(b);
+		generateSettings = GeneratorSettings.InputFromXML(XML_PREFIX + b.ToString());
+
+		float total = 0;
+		foreach(var v in grassList)
+		{
+			if (v.grassWeight == 1) { continue; }
+			total += v.grassWeight;
+		}
+		for(int i =0;i<grassList.Count;i++)
+		{
+			if (grassList[i].grassWeight == 1) { continue; }
+			var temp = grassList[i];
+			temp.grassWeight = grassList[i].grassWeight / total;
+			grassList[i] = temp;
+		}
+	}
+
+	public void CreateHeightMap(int size,long seed)
+	{
+		heightMap = Generator.GetData(size, 
+			generateSettings.scale,
+			generateSettings.octaves,
+			generateSettings.amplitudeMod,
+			generateSettings.frequencyMod, 
+			seed);
+	}
+
+	public void updateGrassInfo(BiomeType b)
+	{
+		switch(b)
+		{
+			case BiomeType.Desert:
+				details_Desert();
+				break;
+			case BiomeType.Savanna:
+				details_Savanna();
+				break;
+			case BiomeType.TropicalRainforest:
+				details_TropicalRainforest();
+				break;
+			case BiomeType.Grassland:
+				details_Grassland();
+				break;
+			case BiomeType.Woodland:
+				details_Woodland();
+				break;
+			case BiomeType.SeasonalForest:
+				details_SeasonalForest();
+				break;
+			case BiomeType.TemperateRainforest:
+				details_TemperateRainforest();
+				break;
+			case BiomeType.BorealForest:
+				details_BorealForest();
+				break;
+			case BiomeType.Tundra:
+				details_Tundra();
+				break;
+			case BiomeType.Ice:
+				details_Ice();
+				break;
+			default:
+				Debug.Log("Did not find biome: "+b.ToString());
+				break;
+		}
+	}
 
 
-    public static void GenerateMoistureDictionary(MoistureValues moist)
-    {
-        MoistureToValue = new Dictionary<MoistureType, float>();
-        MoistureToValue.Add(MoistureType.Dryest, moist.Dryest);
-        MoistureToValue.Add(MoistureType.Dryer, moist.Dryer);
-        MoistureToValue.Add(MoistureType.Dry, moist.Dry);
-        MoistureToValue.Add(MoistureType.Wet, moist.Wet);
-        MoistureToValue.Add(MoistureType.Wetter, moist.Wetter);
-        MoistureToValue.Add(MoistureType.Wettest, moist.Wettest);
-    }
-
-    public static void GenerateHeatDictionary(HeatValues heat)
-    {
-        HeatToValue = new Dictionary<HeatType, float>();
-        HeatToValue.Add(HeatType.Coldest, heat.Coldest);
-        HeatToValue.Add(HeatType.Colder, heat.Colder);
-        HeatToValue.Add(HeatType.Cold, heat.Cold);
-        HeatToValue.Add(HeatType.Warm, heat.Hot);
-        HeatToValue.Add(HeatType.Warmer, heat.Hotter);
-        HeatToValue.Add(HeatType.Warmest, heat.Hottest);
-    }
-
-    public static BiomeType getBiome(float moisture, float heat)
-    {
-        HeatType heatEnum = GetHeatEnum(heat);
-        MoistureType moistureEnum = GetMoistureEnum(moisture);
-        return Generator.BiomeTable[(int)moistureEnum,(int)heatEnum];
-    }
+	public void details_Desert()
+	{
+		//grassList.Add(new grassInfomation(GrassTypes.DesertGrass, 0.2f));
+		//grassList.Add(new grassInfomation(GrassTypes.DeadGrass, 0.2f));
+	}
+	public void details_Savanna()
+	{
+		//grassList.Add(new grassInfomation(GrassTypes.DesertGrass, 0.25f));
+		//grassList.Add(new grassInfomation(GrassTypes.DeadGrass, 0.75f));
+		//grassList.Add(new grassInfomation(GrassTypes.Straw, 0.25f));
+	}
+	public void details_TropicalRainforest()
+	{
+		grassDict[]
 
 
-    public static HeatType GetHeatEnum(float value)
-    {
-        HeatType[] enums = (HeatType[])System.Enum.GetValues(typeof(HeatType));
-        for (int i = 0; i < enums.Length; i++)
-        {
-            if (i == enums.Length - 1)
-            {
-                //none of the previous are valid , thus must be the final one
-                return enums[i];
-            }
-            if (value < HeatToValue[enums[i + 1]])
-            {
-                return enums[i];
-            }
-        }
-        Debug.LogWarning("Invalid tempeture found");
-        return DEFAULT_HEAT;
-    }
-
-    public static MoistureType GetMoistureEnum(float value)
-    {
-        MoistureType[] enums = (MoistureType[])System.Enum.GetValues(typeof(MoistureType));
-        for (int i = 0; i < enums.Length; i++)
-        {
-            if (i == enums.Length - 1)
-            {
-                //none of the previous are valid , thus must be the final one
-                return enums[i];
-            }
-            if (value < MoistureToValue[enums[i + 1]])
-            {
-                return enums[i];
-            }
-        }
-        Debug.LogWarning("Invalid Moisture found");
-        return DEFAULT_MOISTURE;
-    }
+		grassList.Add(new grassInfomation(GrassTypes.RainforestGrass, 1));
+		grassList.Add(new grassInfomation(GrassTypes.WoodlandGrass, 0.5f));
+	}
+	public void details_Grassland()
+	{
+		grassList.Add(new grassInfomation(GrassTypes.GrasslandGrass, 1));
+		grassList.Add(new grassInfomation(GrassTypes.WoodlandGrass, 0.25f));
+		grassList.Add(new grassInfomation(GrassTypes.Flower, 0.5f));
+	}
+	public void details_Woodland()
+	{
+		grassList.Add(new grassInfomation(GrassTypes.GrasslandGrass, 0.5f));
+		grassList.Add(new grassInfomation(GrassTypes.WoodlandGrass, 1f));
+		grassList.Add(new grassInfomation(GrassTypes.Flower, 0.5f));
+	}
+	public void details_SeasonalForest()
+	{
+		grassList.Add(new grassInfomation(GrassTypes.GrasslandGrass, 0.5f));
+		grassList.Add(new grassInfomation(GrassTypes.WoodlandGrass, 0.5f));
+		grassList.Add(new grassInfomation(GrassTypes.RainforestGrass, 0.25f));
+		grassList.Add(new grassInfomation(GrassTypes.DeadGrass, 0.25f));
+	}
+	public void details_TemperateRainforest()
+	{
+		grassList.Add(new grassInfomation(GrassTypes.RainforestGrass, 1));
+		grassList.Add(new grassInfomation(GrassTypes.WoodlandGrass, 0.5f));
+		grassList.Add(new grassInfomation(GrassTypes.GrasslandGrass, 0.5f));
+	}
+	public void details_BorealForest()
+	{
+		grassList.Add(new grassInfomation(GrassTypes.GrasslandGrass, 0.25f));
+		grassList.Add(new grassInfomation(GrassTypes.WoodlandGrass, 0.25f));
+		grassList.Add(new grassInfomation(GrassTypes.SnowGrass, 0.5f));
+	}
+	public void details_Tundra()
+	{
+		grassList.Add(new grassInfomation(GrassTypes.SnowGrass, 1f));
+		grassList.Add(new grassInfomation(GrassTypes.Flower, 0.25f));
+	}
+	public void details_Ice()
+	{
+		//ice shouldnt have grass
+	}
 }
 
+public struct TextureInfomation
+{
+	public Texture2D tex;
+	public int index;
 
+}
+
+public struct grassInfomation
+{
+	public GrassTypes grassEnum;
+	public float grassWeight;
+
+	public grassInfomation(GrassTypes g, float w)
+	{
+		grassEnum = g;
+		grassWeight = w;
+	}
+}

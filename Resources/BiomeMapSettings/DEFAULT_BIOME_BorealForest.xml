@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GeneratorSettings xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <octaves>2</octaves>
+  <frequency>2</frequency>
+  <scale>60</scale>
+  <amplitudeMod>0.3</amplitudeMod>
+  <frequencyMod>1.5</frequencyMod>
+</GeneratorSettings>
